@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  app:
+    image: golang:1.20-alpine
+    container_name: go_app
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - ./tracker.db:/app/tracker.db  
+    command: go run main.go
+    ports:
+      - "8080:8080"  
+    environment:
+      - GO_ENV=production
+    depends_on:
+      - db
+
+  db:
+    image: nouchka/sqlite3
+    container_name: sqlite_db
+    volumes:
+      - ./tracker.db:/data/tracker.db  
+    command: /bin/sh -c "sqlite3 /data/tracker.db"
